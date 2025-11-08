@@ -144,8 +144,8 @@ class FetchArticles extends Command
             return true;
         }
 
-        // Don't run if last run was less than 20 minutes ago
-        return now()->diffInMinutes($lastRun) >= 2;
+        // Don't run if last run was less than 15 minutes ago
+        return now()->diffInMinutes($lastRun) >= 15;
     }
 
     /**

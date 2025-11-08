@@ -1,7 +1,11 @@
 # News Aggregator API
 
-A robust Laravel-based news aggregation platform that fetches, stores, and serves articles from multiple news sources through a unified RESTful API. Built with performance, scalability, and extensibility in mind.
+A high-performance Laravel news aggregator designed to deliver a seamless and unified content experience. The platform intelligently fetches articles from multiple, distinct news sources using an extensible adapter pattern, as demonstrated in the `articles:fetch` command. It offers two distinct content delivery methods to optimize user experience:
 
+- **Blazing-Fast Feeds**: For both public and personalized content streams, the API leverages efficient cursor pagination, enabling smooth, infinite-scroll-ready interfaces with exceptional performance.
+- **Powerful Search**: A comprehensive search and filtering endpoint is available, utilizing traditional pagination to handle complex queries across various parameters like keywords, dates, sources, and authors.
+
+Built with scalability and performance at its core, this API is the perfect backend for a modern news application.
 ## 🚀 Installation & Deployment
 
 ### Step 1: Clone the Repository
@@ -58,6 +62,10 @@ Add new adapters in `AppServiceProvider.php`:
 ### Step 7: Run the Application
 ```bash
 php artisan serve
+```
+### Step 7: Run the FetchArticle schedule
+```bash
+php artisan schedule:work
 ```
 
 ## 🔧 API Endpoints
