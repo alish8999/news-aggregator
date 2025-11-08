@@ -46,7 +46,6 @@ Well-structured endpoints with comprehensive filtering:
 - **PHP**: 8.2 or higher
 - **PostgreSQL**: 13 or higher
 - **Composer**: Latest version
-- **Node.js & NPM**: For frontend assets (optional)
 - **API Keys**: 
   - NewsAPI (https://newsapi.org/)
   - The Guardian (https://open-platform.theguardian.com/)
