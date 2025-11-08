@@ -7,53 +7,142 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+# News Aggregator API
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+A robust Laravel-based news aggregation platform that fetches, stores, and serves articles from multiple news sources through a unified RESTful API. Built with performance, scalability, and extensibility in mind.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🌟 Key Strengths & Architecture Highlights
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 1. **Adapter Pattern for News Sources**
+The application uses a clean adapter pattern to integrate multiple news APIs seamlessly:
+- **Extensible Design**: Add new news sources by implementing the `NewsAdapterInterface`
+- **Standardized Data**: All adapters transform source-specific data into a unified format
+- **Fault Tolerance**: Each adapter handles errors independently without affecting others
+- **Current Integrations**: NewsAPI, The Guardian, The New York Times
 
-## Learning Laravel
+### 2. **High-Performance Database Design**
+Optimized PostgreSQL schema with strategic indexing:
+- **Full-Text Search**: PostgreSQL `tsvector` with GIN index for lightning-fast article searches
+- **Composite Indexes**: Optimized for common query patterns (source + date, category + date)
+- **Cursor Pagination**: Efficient infinite scroll support for large datasets (implemented in `@DbArticleRepository`)
+- **Descending Indexes**: Specialized indexes for feed queries (`published_at DESC, id DESC`)
+- **Automatic Search Vector Updates**: Database triggers maintain search indexes automatically
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 3. **Repository Pattern**
+Clean separation of data access logic:
+- **Interface-Based**: `ArticleRepositoryInterface` allows easy testing and implementation swapping
+- **Query Optimization**: Centralized query building with proper joins and eager loading
+- **Pagination Strategies**: Both traditional and cursor-based pagination supported
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 4. **RESTful API Design**
+Well-structured endpoints with comprehensive filtering:
+- **Public Endpoints**: Article search, filtering, and browsing without authentication (@ArticleController)
+- **Authenticated Endpoints**: Personalized feeds based on user preferences (@PreferenceController)
+- **Token-Based Auth**: Laravel Sanctum for secure API authentication (@AuthController)
+- **Flexible Filtering**: Search by keyword, date range, category, source, and author
 
-## Laravel Sponsors
+## 📋 Prerequisites
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **PHP**: 8.2 or higher
+- **PostgreSQL**: 13 or higher
+- **Composer**: Latest version
+- **Node.js & NPM**: For frontend assets (optional)
+- **API Keys**: 
+  - NewsAPI (https://newsapi.org/)
+  - The Guardian (https://open-platform.theguardian.com/)
+  - The New York Times (https://developer.nytimes.com/)
 
-### Premium Partners
+## 🚀 Installation & Deployment
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Step 1: Clone the Repository
+```bash
+git clone <repository-url>
+cd news-aggregator
 
-## Contributing
+### Step 2: Install Dependencies
+```bash
+composer install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Step 3: Environment Configuration
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## Code of Conduct
+### Step 4: Database Setup
+```bash
+php artisan migrate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Step 5: Configure API Keys
+Add your news API keys to `.env`:
+```bash
+# NewsAPI Configuration
+NEWS_API_KEY=your_newsapi_key
+NEWS_API_BASE_URL=https://newsapi.org/v2
 
-## Security Vulnerabilities
+# The Guardian Configuration
+GUARDIAN_API_KEY=your_guardian_key
+GUARDIAN_API_BASE_URL=https://content.guardianapis.com
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# The New York Times Configuration
+NYT_API_KEY=your_nyt_key
+NYT_API_BASE_URL=https://api.nytimes.com/svc/search/v2
+```
 
-## License
+### Step 6: Register News Adapters
+Add new adapters in `AppServiceProvider.php`:
+```php
+    $adapters = [
+        NewsAPIAdapter::class,
+        GuardianAdapter::class,
+        NYTAdapter::class,
+        // add new adapter here
+    ];
+    
+  
+});
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Step 7: Run the Application
+```bash
+php artisan serve
+```
+
+## 🔧 API Endpoints
+
+### Authentication
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
+
+### Articles
+- `GET /api/articles` - Search and filter articles (public)
+    - Query params: `keyword`, `date`, `date_from`, `date_to`, `category`, `source`, `author`, `per_page`
+- `GET /api/articles/user/feed` - Get personalized feed based on user preferences (requires auth)
+    - Query params: `per_page`, `cursor`
+
+### Preferences (Public)
+- `GET /api/sources` - Get all available sources
+- `GET /api/categories` - Get all available categories
+- `GET /api/authors` - Get all available authors
+
+### Preferences (Protected)
+- `GET /api/user/preferences` - Get current user's preferences
+- `GET /api/user/sources` - Get all available sources (duplicate endpoint)
+- `GET /api/user/categories` - Get all available categories (duplicate endpoint)
+- `GET /api/user/authors` - Get all available authors (duplicate endpoint)
+- `POST /api/user/preferences` - Update user preferences
+    - Body: `{ "sources": [1,2,3], "categories": [1,2], "authors": [1,2,3] }`
+### Health Check
+- `GET /api/health` - API health status
+
+## 📦 Adding New News Adapters
+
+To add a new news source:
+1. Create a new adapter class implementing `NewsAdapterInterface`
+2. Example: `App\Adapters\BBCAdapter.php`
+3. Register the adapter in `AppServiceProvider.php`
+
+
