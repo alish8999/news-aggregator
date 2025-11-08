@@ -68,9 +68,11 @@ php artisan serve
 - `POST /api/auth/logout`
 
 ### Articles
-- `GET /api/articles` - Search and filter articles (public)
+- `GET /api/articles` - Search and filter articles support normal pagination
     - Query params: `keyword`, `date`, `date_from`, `date_to`, `category`, `source`, `author`, `per_page`
 - `GET /api/articles/user/feed` - Get personalized feed based on user preferences (requires auth)
+    - Query params: `per_page`, `cursor`-
+`GET /api/articles/public/feed` - Get public feed (not requires auth) 
     - Query params: `per_page`, `cursor`
 
 ### Preferences (Public)
@@ -80,9 +82,6 @@ php artisan serve
 
 ### Preferences (Protected)
 - `GET /api/user/preferences` - Get current user's preferences
-- `GET /api/user/sources` - Get all available sources (duplicate endpoint)
-- `GET /api/user/categories` - Get all available categories (duplicate endpoint)
-- `GET /api/user/authors` - Get all available authors (duplicate endpoint)
 - `POST /api/user/preferences` - Update user preferences
     - Body: `{ "sources": [1,2,3], "categories": [1,2], "authors": [1,2,3] }`
 ### Health Check

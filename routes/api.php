@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\PreferenceController;
-use App\Http\Controllers\HealthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,8 +37,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // User preferences - now handled by PreferenceController
     Route::get('/user/preferences', [PreferenceController::class, 'getPreferences']);
-    Route::get('/user/sources', [PreferenceController::class, 'getSources']);
-    Route::get('/user/categories', [PreferenceController::class, 'getCategories']);
-    Route::get('/user/authors', [PreferenceController::class, 'getAuthors']);
     Route::post('/user/preferences', [PreferenceController::class, 'updatePreferences']);
 });
