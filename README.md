@@ -1,55 +1,6 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
-
 # News Aggregator API
 
 A robust Laravel-based news aggregation platform that fetches, stores, and serves articles from multiple news sources through a unified RESTful API. Built with performance, scalability, and extensibility in mind.
-
-## 🌟 Key Strengths & Architecture Highlights
-
-### 1. **Adapter Pattern for News Sources**
-The application uses a clean adapter pattern to integrate multiple news APIs seamlessly:
-- **Extensible Design**: Add new news sources by implementing the `NewsAdapterInterface`
-- **Standardized Data**: All adapters transform source-specific data into a unified format
-- **Fault Tolerance**: Each adapter handles errors independently without affecting others
-- **Current Integrations**: NewsAPI, The Guardian, The New York Times
-
-### 2. **High-Performance Database Design**
-Optimized PostgreSQL schema with strategic indexing:
-- **Full-Text Search**: PostgreSQL `tsvector` with GIN index for lightning-fast article searches
-- **Composite Indexes**: Optimized for common query patterns (source + date, category + date)
-- **Cursor Pagination**: Efficient infinite scroll support for large datasets (implemented in `@DbArticleRepository`)
-- **Descending Indexes**: Specialized indexes for feed queries (`published_at DESC, id DESC`)
-- **Automatic Search Vector Updates**: Database triggers maintain search indexes automatically
-
-### 3. **Repository Pattern**
-Clean separation of data access logic:
-- **Interface-Based**: `ArticleRepositoryInterface` allows easy testing and implementation swapping
-- **Query Optimization**: Centralized query building with proper joins and eager loading
-- **Pagination Strategies**: Both traditional and cursor-based pagination supported
-
-### 4. **RESTful API Design**
-Well-structured endpoints with comprehensive filtering:
-- **Public Endpoints**: Article search, filtering, and browsing without authentication (@ArticleController)
-- **Authenticated Endpoints**: Personalized feeds based on user preferences (@PreferenceController)
-- **Token-Based Auth**: Laravel Sanctum for secure API authentication (@AuthController)
-- **Flexible Filtering**: Search by keyword, date range, category, source, and author
-
-## 📋 Prerequisites
-
-- **PHP**: 8.2 or higher
-- **PostgreSQL**: 13 or higher
-- **Composer**: Latest version
-- **API Keys**: 
-  - NewsAPI (https://newsapi.org/)
-  - The Guardian (https://open-platform.theguardian.com/)
-  - The New York Times (https://developer.nytimes.com/)
 
 ## 🚀 Installation & Deployment
 
@@ -136,5 +87,47 @@ php artisan serve
     - Body: `{ "sources": [1,2,3], "categories": [1,2], "authors": [1,2,3] }`
 ### Health Check
 - `GET /api/health` - API health status
+
+
+## 🌟 Key Strengths & Architecture Highlights
+
+### 1. **Adapter Pattern for News Sources**
+The application uses a clean adapter pattern to integrate multiple news APIs seamlessly:
+- **Extensible Design**: Add new news sources by implementing the `NewsAdapterInterface`
+- **Standardized Data**: All adapters transform source-specific data into a unified format
+- **Fault Tolerance**: Each adapter handles errors independently without affecting others
+- **Current Integrations**: NewsAPI, The Guardian, The New York Times
+
+### 2. **High-Performance Database Design**
+Optimized PostgreSQL schema with strategic indexing:
+- **Full-Text Search**: PostgreSQL `tsvector` with GIN index for lightning-fast article searches
+- **Composite Indexes**: Optimized for common query patterns (source + date, category + date)
+- **Cursor Pagination**: Efficient infinite scroll support for large datasets (implemented in `@DbArticleRepository`)
+- **Descending Indexes**: Specialized indexes for feed queries (`published_at DESC, id DESC`)
+- **Automatic Search Vector Updates**: Database triggers maintain search indexes automatically
+
+### 3. **Repository Pattern**
+Clean separation of data access logic:
+- **Interface-Based**: `ArticleRepositoryInterface` allows easy testing and implementation swapping
+- **Query Optimization**: Centralized query building with proper joins and eager loading
+- **Pagination Strategies**: Both traditional and cursor-based pagination supported
+
+### 4. **RESTful API Design**
+Well-structured endpoints with comprehensive filtering:
+- **Public Endpoints**: Article search, filtering, and browsing without authentication (@ArticleController)
+- **Authenticated Endpoints**: Personalized feeds based on user preferences (@PreferenceController)
+- **Token-Based Auth**: Laravel Sanctum for secure API authentication (@AuthController)
+- **Flexible Filtering**: Search by keyword, date range, category, source, and author
+
+## 📋 Prerequisites
+
+- **PHP**: 8.2 or higher
+- **PostgreSQL**: 13 or higher
+- **Composer**: Latest version
+- **API Keys**: 
+  - NewsAPI (https://newsapi.org/)
+  - The Guardian (https://open-platform.theguardian.com/)
+  - The New York Times (https://developer.nytimes.com/)
+
 
 
