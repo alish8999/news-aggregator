@@ -137,11 +137,4 @@ php artisan serve
 ### Health Check
 - `GET /api/health` - API health status
 
-## 📦 Adding New News Adapters
-
-To add a new news source:
-1. Create a new adapter class implementing `NewsAdapterInterface`
-2. Example: `App\Adapters\BBCAdapter.php`
-3. Register the adapter in `AppServiceProvider.php`
-
 

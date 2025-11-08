@@ -15,9 +15,9 @@ interface ArticleRepositoryInterface
     public function getPaginatedFilteredArticles(Request $request): LengthAwarePaginator;
 
     /**
-     * Get cursor-paginated user feed (optimized for infinite scroll)
+     * Get cursor-paginated feed for a user or the public (optimized for infinite scroll)
      */
-    public function getCursorPaginatedUserFeed(User $user, Request $request): CursorPaginator;
+    public function getCursorPaginatedUserFeed(?User $user, Request $request): CursorPaginator;
 
     /**
      * Get paginated user feed (legacy method)

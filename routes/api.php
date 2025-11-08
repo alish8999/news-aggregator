@@ -25,7 +25,7 @@ Route::get('/authors', [PreferenceController::class, 'getAuthors']);
 
 // Health check
 Route::get('/health', [HealthController::class, 'check']);
-
+Route::get('articles/public/feed', [ArticleController::class, 'publicFeed']);
 // Private endpoints for authenticated users
 Route::middleware('auth:sanctum')->group(function () {
     // Logout

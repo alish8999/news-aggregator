@@ -49,6 +49,25 @@ class ArticleController extends Controller
     }
 
     /**
+     * Get public feed
+     *
+     * Query params:
+     * - per_page: items per page (1-100, default: 20)
+     * - cursor: pagination cursor (for infinite scroll)
+     */
+    public function publicFeed(Request $request)
+    {
+        $request->validate([
+            'per_page' => 'nullable|integer|min:1|max:100',
+        ]);
+
+        // Pass null for the user to get the public feed
+        $articles = $this->articleRepository->getCursorPaginatedUserFeed(null, $request);
+
+        return ArticleResource::collection($articles);
+    }
+
+    /**
      * Get personalized feed for authenticated user
      *
      * Query params:

@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Interfaces\ArticleRepositoryInterface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -155,19 +154,15 @@ class FetchArticles extends Command
      */
     private function findOrCreate(string $table, string $name): int
     {
-        // Handle empty or "Unknown" names
         if (empty($name) || $name === 'Unknown') {
             $name = 'Unknown';
         }
-
-        // 1. Try to find the record
         $record = DB::table($table)->where('name', $name)->first();
 
         if ($record) {
             return $record->id;
         }
 
-        // 2. Not found, so create it
         $slug = str($name)->slug()->value();
         $data = [
             'name' => $name,
@@ -176,7 +171,6 @@ class FetchArticles extends Command
         ];
 
         if ($table === 'sources' || $table === 'categories') {
-            // Check if slug exists, if so, make it unique
             $baseSlug = $slug;
             $counter = 1;
             while (DB::table($table)->where('slug', $slug)->exists()) {

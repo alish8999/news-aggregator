@@ -83,30 +83,32 @@ class DbArticleRepository implements ArticleRepositoryInterface
     }
 
     /**
-     * Get cursor-paginated user feed (optimized for infinite scroll)
+     * Get cursor-paginated feed for a user or the public (optimized for infinite scroll)
      */
-    public function getCursorPaginatedUserFeed(User $user, Request $request): CursorPaginator
+    public function getCursorPaginatedUserFeed(?User $user, Request $request): CursorPaginator
     {
-        // Get user preferences
-        $preferredSourceIds = $user->preferredSources()->pluck('sources.id')->toArray();
-        $preferredCategoryIds = $user->preferredCategories()->pluck('categories.id')->toArray();
-        $preferredAuthorIds = $user->preferredAuthors()->pluck('authors.id')->toArray();
-
         $query = $this->baseQuery();
 
-        // If user has preferences, filter by them
-        if (!empty($preferredSourceIds) || !empty($preferredCategoryIds) || !empty($preferredAuthorIds)) {
-            $query->where(function ($q) use ($preferredSourceIds, $preferredCategoryIds, $preferredAuthorIds) {
-                if (!empty($preferredSourceIds)) {
-                    $q->orWhereIn('articles.source_id', $preferredSourceIds);
-                }
-                if (!empty($preferredCategoryIds)) {
-                    $q->orWhereIn('articles.category_id', $preferredCategoryIds);
-                }
-                if (!empty($preferredAuthorIds)) {
-                    $q->orWhereIn('articles.author_id', $preferredAuthorIds);
-                }
-            });
+        // If a user is provided, filter by their preferences
+        if ($user) {
+            $preferredSourceIds = $user->preferredSources()->pluck('sources.id')->toArray();
+            $preferredCategoryIds = $user->preferredCategories()->pluck('categories.id')->toArray();
+            $preferredAuthorIds = $user->preferredAuthors()->pluck('authors.id')->toArray();
+
+            // If user has preferences, filter by them
+            if (!empty($preferredSourceIds) || !empty($preferredCategoryIds) || !empty($preferredAuthorIds)) {
+                $query->where(function ($q) use ($preferredSourceIds, $preferredCategoryIds, $preferredAuthorIds) {
+                    if (!empty($preferredSourceIds)) {
+                        $q->orWhereIn('articles.source_id', $preferredSourceIds);
+                    }
+                    if (!empty($preferredCategoryIds)) {
+                        $q->orWhereIn('articles.category_id', $preferredCategoryIds);
+                    }
+                    if (!empty($preferredAuthorIds)) {
+                        $q->orWhereIn('articles.author_id', $preferredAuthorIds);
+                    }
+                });
+            }
         }
 
         $perPage = $request->input('per_page', 20);
